@@ -23,6 +23,15 @@ class Stock(Asset):
         self.company = company
         self.ticker = ticker
 
+    def __str__(self):
+        return f"{self.ticker}: {self.company} -- ${self.price}"
+    
+    # the __lt__ is needed for sort
+    def __lt__(self, value):
+        if not isinstance(value, Stock):
+            raise ValueError("Can't compare book to non-stock type")
+
+        return self.price < value.price
 
 class Bond(Asset):
     def __init__(self, price, description, duration, yieldamt):
@@ -31,6 +40,15 @@ class Bond(Asset):
         self.duration = duration
         self.yieldamt = yieldamt
 
+    def __str__(self):
+        return f"{self.description}: {self.duration}yr : ${self.price} : {self.yieldamt}%"
+
+    # the __lt__ is needed for sort
+    def __lt__(self, value):
+        if not isinstance(value, Bond):
+            raise ValueError("Can't compare book to non-bond type")
+
+        return self.yieldamt < value.yieldamt
 
 # ~~~~~~~~~ TEST CODE ~~~~~~~~~
 stocks = [
