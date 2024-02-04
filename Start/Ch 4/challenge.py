@@ -5,17 +5,44 @@
 # The subclasses are required to override the magic method
 # that makes them sortable
 
-class Asset():
-    pass
+from dataclasses import dataclass
+
+@dataclass
+class Asset:
+    price: float
     
-
+@dataclass(init = False)
 class Stock(Asset):
-    pass
+    ticker: str
+    price: float
+    company: str
 
+    #override init because params are not passed in in proper order
+    def __init__(self, ticker, price, company):
+        self.ticker = ticker
+        self.price = price
+        self.company = company
 
+    # the __lt__ is needed for sort
+    def __lt__(self, other):
+        if not isinstance(other, Stock):
+            raise ValueError("Can't compare book to non-stock type")
+        return self.price < other.price
+       
+@dataclass
 class Bond(Asset):
-    pass
+#    price: float
+    description: str
+    duration: int
+    vyield: float
 
+
+    # the __lt__ is needed for sort
+    def __lt__(self, other):
+        if not isinstance(other, Bond):
+            raise ValueError("Can't compare book to non-bond type")
+        return self.vyield < other.vyield
+    
 # ~~~~~~~~~ TEST CODE ~~~~~~~~~
 stocks = [
     Stock("MSFT", 342.0, "Microsoft Corp"),
@@ -31,13 +58,14 @@ bonds = [
     Bond(99.57, "2 Year US Treasury", 2, 4.98)
 ]
 
-try:
-   ast = Asset(100.0)
-except:
-   print("Can't instantiate Asset!")
+#try:
+#   ast = Asset(100.0)
+#except:
+#   print("Can't instantiate Asset!")
 
 stocks.sort()
 bonds.sort()
+
 
 for stock in stocks:
    print(stock)
